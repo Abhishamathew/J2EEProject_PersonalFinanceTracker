@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Register</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (!validateForm()) {
+          return false;
+        }
+
+        const formData = new FormData();
+        formData.append('userName', document.getElementById('userName').value);
+        formData.append('password', document.getElementById('password').value);
+        formData.append('email', document.getElementById('email').value);
+        formData.append('phoneNumber', document.getElementById('phoneNumber').value);
+
+        fetch('/api/users/register', {
+          method: 'POST',
+          body: formData
+        })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error('Registration failed');
+                  }
+                  return response.text();
+                })
+                .then(result => {
+                  if (result === 'Registered successfully') {
+                    window.location.href = '/?message=registered';
+                  } else {
+                    showMessage('Registration failed: ' + result, 'error');
+                  }
+                })
+                .catch(error => {
+                  console.error('Error:', error);
+                  showMessage('Registration failed. Please try again later.', 'error');
+                });
+      });
+    });
+
+    function validateForm() {
+      clearErrors();
+      let isValid = true;
+      if (!document.getElementById('userName').value) {
+        showError('userName', 'Username is required');
+        isValid = false;
+      }
+
+      if (!document.getElementById('password').value) {
+        showError('password', 'Password is required');
+        isValid = false;
+      }
+
+      if (!document.getElementById('email').value) {
+        showError('email', 'Email is required');
+        isValid = false;
+      }
+
+      if (!document.getElementById('phoneNumber').value) {
+        showError('phoneNumber', 'Phone Number is required');
+        isValid = false;
+      }
+
+      return isValid;
+    }
+
+    function showError(fieldId, message) {
+      const field = document.getElementById(fieldId);
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'error';
+      errorDiv.textContent = message;
+      field.parentNode.appendChild(errorDiv);
+      field.classList.add('error-input');
+    }
+
+    function clearErrors() {
+      const errorMessages = document.querySelectorAll('.error');
+      errorMessages.forEach(el => el.remove());
+
+      const errorFields = document.querySelectorAll('.error-input');
+      errorFields.forEach(el => el.classList.remove('error-input'));
+    }
+
+    function showMessage(message, type) {
+      const existingMessages = document.querySelectorAll('.error-message, .success-message');
+      existingMessages.forEach(el => el.remove());
+
+      const messageDiv = document.createElement('div');
+      messageDiv.className = type + '-message';
+      messageDiv.textContent = message;
+
+      document.querySelector('.container').insertBefore(messageDiv, document.querySelector('h1').nextSibling);
+    }
+  </script>
+</head>
+<body>
+<div class="container">
+  <h1>Register</h1>
+  <form id="registerForm">
+    <div class="form-group">
+      <label for="userName">Username:</label>
+      <input type="text" id="userName" name="userName" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+    </div>
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+    <div class="form-group">
+      <label for="phoneNumber">Phone Number:</label>
+      <input type="text" id="phoneNumber" name="phoneNumber" required>
+    </div>
+    <div class="form-group">
+      <button type="submit">Register</button>
+    </div>
+  </form>
+  <div class="links">
+    <a th:href="@{/}">Back to Login</a>
+  </div>
+</div>
+</body>
+</html>
