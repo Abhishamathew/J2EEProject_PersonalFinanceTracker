@@ -28,12 +28,12 @@ public class BudgetService {
     }
 
     public Budget saveBudget(Budget budget) {
-        if(budget.getAmount() <= budget.getExpenditure()){
+        if (budget.getAmount() <= budget.getExpenditure()) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            String message = String.format("Budget for period %s to %s has exceeded",
+            String message = String.format("Budget for period %s to %s has exceeded or is about to exceed",
                     dateFormat.format(budget.getStartDate()),
                     dateFormat.format(budget.getEndDate()));
-            Notification notification = new Notification( message, new Date(System.currentTimeMillis()) , budget.getUserId());
+            Notification notification = new Notification(message, new Date(System.currentTimeMillis()), budget.getUserId());
             notificationService.saveNotification(notification);
         }
         return budgetRepository.save(budget);

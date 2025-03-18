@@ -1,25 +1,171 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-
+    <meta charset="UTF-8">
     <title>Notifications</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <style>
+        .notification-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .notification-item {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #4CAF50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .notification-content {
+            flex-grow: 1;
+        }
+        .notification-date {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 80px;
+        }
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+        .no-notifications {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
 </head>
 <body>
-<h1>Notifications</h1>
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>User ID</th>
-        <th>Message</th>
-        <th>Date</th>
-    </tr>
-    <tr th:each="notification : ${notifications}">
-        <td th:text="${notification.notificationId}"></td>
-        <td th:text="${notification.userId}"></td>
-        <td th:text="${notification.message}"></td>
-        <td th:text="${notification.date}"></td>
-    </tr>
-</table>
-<a href="/">Back</a>
+<div class="container-big">
+    <div class="navigation">
+        <a href="/dashboard">Back to Dashboard</a>
+        <a href="/?logout=true">Logout</a>
+    </div>
+
+    <h1>Your Notifications</h1>
+
+    <div id="message" class="message" style="display: none;"></div>
+
+    <div class="notification-container">
+        <div id="notificationsList">
+            <p>Loading notifications...</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get userId from session storage
+            const userId = sessionStorage.getItem('userId');
+
+            if (!userId) {
+                window.location.href = '/?message=failed';
+                return;
+            }
+
+            // Fetch notifications for the user
+            fetchNotifications(userId);
+        });
+
+        function fetchNotifications(userId) {
+            fetch(`/api/notifications/user/${userId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch notifications');
+                    }
+                    return response.json();
+                })
+                .then(notifications => {
+                    displayNotifications(notifications);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('Failed to load notifications', 'error');
+                });
+        }
+
+        function displayNotifications(notifications) {
+            const notificationsList = document.getElementById('notificationsList');
+
+            if (notifications.length === 0) {
+                notificationsList.innerHTML = '<div class="no-notifications">You have no notifications.</div>';
+                return;
+            }
+
+            let html = '';
+
+            notifications.forEach(notification => {
+                const date = new Date(notification.date).toLocaleDateString();
+
+                html += `
+                <div class="notification-item">
+                    <div class="notification-content">
+                        <div class="notification-message">${notification.message}</div>
+                        <div class="notification-date">${date}</div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteNotification(${notification.notificationId})">Delete</button>
+                </div>`;
+            });
+
+            notificationsList.innerHTML = html;
+        }
+
+        function deleteNotification(notificationId) {
+            if (confirm('Are you sure you want to delete this notification?')) {
+                fetch(`/api/notifications/${notificationId}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to delete notification');
+                        }
+
+                        const userId = sessionStorage.getItem('userId');
+                        showMessage('Notification deleted successfully', 'success');
+                        fetchNotifications(userId);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showMessage('Failed to delete notification', 'error');
+                    });
+            }
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = message;
+            messageDiv.className = 'message ' + type;
+            messageDiv.style.display = 'block';
+
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</div>
 </body>
 </html>

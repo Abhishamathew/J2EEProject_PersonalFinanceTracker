@@ -8,7 +8,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Get userId from session storage
             const userId = sessionStorage.getItem('userId');
-
+            console.log(userId);
             if (!userId) {
                 window.location.href = '/?message=failed';
                 return;
@@ -150,7 +150,7 @@
 <body>
 <div class="container-big">
     <div class="navigation">
-        <a href="/expenses">Manage Expenses</a>
+        <a href="/notifications">Notifications</a>
         <a href="/?logout=true">Logout</a>
     </div>
     <h1>Budgets</h1>

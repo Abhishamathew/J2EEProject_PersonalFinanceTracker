@@ -13,19 +13,19 @@ import java.sql.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Goal {
+public class Alert {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long goalId;
+    private Long alertId;
 
     private String description;
     private double targetAmount;
-    private double currentAmount;
+    private double currentAmount=0;
     private Date deadline;
 
     private Long budgetId;
 
-    public Goal(String description, double targetAmount, double currentAmount, Date deadline) {
+    public Alert(String description, double targetAmount, double currentAmount, Date deadline) {
         this.description = description;
         this.targetAmount = targetAmount;
         this.currentAmount = currentAmount;

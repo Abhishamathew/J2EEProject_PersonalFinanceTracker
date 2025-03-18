@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Expense</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <style>
+    .form-container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .message {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+    }
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+  </style>
+</head>
+<body>
+<div class="container-big">
+  <div class="navigation">
+    <a href="javascript:history.back()">Back</a>
+    <a href="/dashboard">Dashboard</a>
+  </div>
+
+  <div class="form-container">
+    <h1>Create New Expense</h1>
+    <div id="message" class="message" style="display: none;"></div>
+
+    <form id="expenseForm">
+      <div class="form-group">
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" step="0.01" min="0" required>
+      </div>
+
+      <div class="form-group">
+        <label for="category">Category:</label>
+        <input type="text" id="category" name="category" required>
+      </div>
+
+      <div class="form-group">
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+
+      <input type="hidden" id="budgetId" name="budgetId">
+
+      <div class="form-group">
+        <button type="submit">Create Expense</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get budgetId from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const budgetId = urlParams.get('budgetId');
+
+      if (!budgetId) {
+        showMessage('Budget ID is missing. Please go back and try again.', 'error');
+        document.querySelector('button[type="submit"]').disabled = true;
+        return;
+      }
+
+      // Set budget ID in the hidden field
+      document.getElementById('budgetId').value = budgetId;
+
+      // Set default date to today
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('date').value = today;
+
+      // Handle form submission
+      document.getElementById('expenseForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append('amount', document.getElementById('amount').value);
+        formData.append('category', document.getElementById('category').value);
+        formData.append('date', document.getElementById('date').value);
+        formData.append('budgetId', document.getElementById('budgetId').value);
+
+        fetch('/api/expenses', {
+          method: 'POST',
+          body: formData
+        })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error('Failed to create expense');
+                  }
+                  return response.json();
+                })
+                .then(data => {
+                  showMessage('Expense created successfully!', 'success');
+
+                  // Redirect back to budget-details after a short delay
+                  setTimeout(() => {
+                    window.location.href = '/budget-details?id=' + budgetId;
+                  }, 1500);
+                })
+                .catch(error => {
+                  console.error('Error:', error);
+                  showMessage('Failed to create expense. Please try again.', 'error');
+                });
+      });
+    });
+
+    function showMessage(text, type) {
+      const messageDiv = document.getElementById('message');
+      messageDiv.textContent = text;
+      messageDiv.className = 'message ' + type;
+      messageDiv.style.display = 'block';
+    }
+  </script>
+</div>
+</body>
+</html>

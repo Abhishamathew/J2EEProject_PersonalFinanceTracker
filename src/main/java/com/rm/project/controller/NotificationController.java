@@ -22,4 +22,12 @@ public class NotificationController {
     public Notification createNotification(@RequestBody Notification notification) {
         return notificationService.saveNotification(notification);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteNotification(@PathVariable Long id) {
+        Notification  notification= notificationService.getNotificationById(id);
+        if(notification!=null) {
+            notificationService.deleteNotification(notification);
+        }
+    }
 }

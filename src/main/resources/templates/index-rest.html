@@ -12,7 +12,7 @@
       } else if (urlParams.get('message') === 'failed') {
         showMessage('Invalid Username or Password', 'error');
       }else if (urlParams.get('logout') === 'true'){
-        sessionStorage.removeItem('studentId');
+        sessionStorage.removeItem('userId');
       }
 
       document.getElementById('loginForm').addEventListener('submit', function(e) {

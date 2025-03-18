@@ -26,14 +26,14 @@ public class ViewController {
         return "budget";
     }
 
-    @GetMapping("/expenses")
+    @GetMapping("/create-expense")
     public String expenses() {
-        return "expenses";
+        return "create-expense";
     }
 
-    @GetMapping("/goals")
-    public String goals() {
-        return "goals";
+    @GetMapping("/create-alert")
+    public String alerts() {
+        return "create-alert";
     }
 
     @GetMapping("/notifications")

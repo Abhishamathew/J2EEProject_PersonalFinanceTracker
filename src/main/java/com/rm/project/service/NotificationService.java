@@ -16,7 +16,19 @@ public class NotificationService {
         return notificationRepository.findByUserId(userId);
     }
 
+    public Notification getNotificationById(Long notificationId) {
+        return notificationRepository.findById(notificationId).orElse(null);
+    }
+
+    public List<Notification> saveNotifications(List<Notification> notifications) {
+        return notificationRepository.saveAll(notifications);
+    }
+
     public Notification saveNotification(Notification notification) {
         return notificationRepository.save(notification);
+    }
+
+    public void deleteNotification(Notification notification) {
+        notificationRepository.delete(notification);
     }
 }

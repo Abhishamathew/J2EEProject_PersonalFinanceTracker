@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Alert</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <style>
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+<div class="container-big">
+    <div class="navigation">
+        <a href="javascript:history.back()">Back</a>
+        <a href="/dashboard">Dashboard</a>
+    </div>
+
+    <div class="form-container">
+        <h1>Create New Alert</h1>
+        <div id="message" class="message" style="display: none;"></div>
+
+        <form id="alertForm">
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <input type="text" id="description" name="description" required>
+            </div>
+
+            <div class="form-group">
+                <label for="targetAmount">Target Amount:</label>
+                <input type="number" id="targetAmount" name="targetAmount" step="0.01" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="currentAmount">Current Amount:</label>
+                <input type="number" id="currentAmount" name="currentAmount" step="0.01" min="0" value="0">
+            </div>
+
+            <div class="form-group">
+                <label for="deadline">Deadline:</label>
+                <input type="date" id="deadline" name="deadline" required>
+            </div>
+
+            <input type="hidden" id="budgetId" name="budgetId">
+
+            <div class="form-group">
+                <button type="submit">Create Alert</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get budgetId from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const budgetId = urlParams.get('budgetId');
+
+            if (!budgetId) {
+                showMessage('Budget ID is missing. Please go back and try again.', 'error');
+                document.querySelector('button[type="submit"]').disabled = true;
+                return;
+            }
+
+            // Set budget ID in the hidden field
+            document.getElementById('budgetId').value = budgetId;
+
+            // Set minimum date to today
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('deadline').min = formattedDate;
+
+            // Handle form submission
+            document.getElementById('alertForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData();
+                formData.append('description', document.getElementById('description').value);
+                formData.append('targetAmount', document.getElementById('targetAmount').value);
+                formData.append('currentAmount', document.getElementById('currentAmount').value);
+                formData.append('deadline', document.getElementById('deadline').value);
+                formData.append('budgetId', document.getElementById('budgetId').value);
+
+                fetch('/api/alerts', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to create alert');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        showMessage('Alert created successfully!', 'success');
+
+                        // Redirect back to budget-details after a short delay
+                        setTimeout(() => {
+                            window.location.href = '/budget-details?id=' + budgetId;
+                        }, 1500);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showMessage('Failed to create alert. Please try again.', 'error');
+                    });
+            });
+
+            function showMessage(text, type) {
+                const messageDiv = document.getElementById('message');
+                messageDiv.textContent = text;
+                messageDiv.className = 'message ' + type;
+                messageDiv.style.display = 'block';
+            }
+        });
+    </script>
+</div>
+</body>
+</html>
