@@ -40,6 +40,9 @@ public class AlertService {
     }
 
     public void saveAlerts(List<Alert> alerts) {
+        if (alerts.isEmpty()) {
+            return;
+        }
         Budget budget = budgetService.getBudgetById(alerts.getFirst().getBudgetId()).orElse(null);
         assert budget != null;
         List<Notification> notifications = new ArrayList<>();
