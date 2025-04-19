@@ -1,7 +1,37 @@
+# Finance/Budget Management System
+
+## How to run the project
+Download the project and open it in your IDE. Make sure you have Java 21 installed.
+Update the `application.properties` file with your MySQL database credentials.
+Create a database named `project_j2ee` in your MySQL server.
+Run the project using your IDE.
+
+## How to test the project
+For the frontend, you can access the application at http://localhost:8080/ after running the project.
+
+- Create a new by navigating to the registration page and filling out the form.
+- You can log in with the registered user credentials.
+- Once logged in, you can create a new budget.
+- Then click on the view details button of the budget to view the details of the budget.
+- You can add expenses to the budget by clicking on the add new expense button.
+- You can also add alerts to the budget by clicking on the add new alert button.
+- You can edit the alerts or expenses by clicking on their respective edit buttons.
+- You can delete the alerts or expenses by clicking on their respective delete buttons.
+- You can go back to the budget list by clicking on the dashboard navigation.
+- Notifications will be crated when the total expenses exceed the alert target amount and the expense is before the alert deadline.
+- You can view the notifications by clicking on the notification navigation in the dashboard in the top corner.
+- You can delete the notifications by clicking on the delete button of the notification.
+
+For the APIs you can use Postman to test the APIs. 
+
 # Budget Management API Documentation
 
 ## Overview
 This API provides endpoints for managing budgets, expenses, alerts, notifications, and user accounts in a budget management application.
+
+## Detailed API Documentation
+The detailed API documentation is available at [Postman Documentation](https://documenter.getpostman.com/view/14091899/2sB2cd5JXA)
+or find the swagger documentation after running the application at [Swagger UI](http://localhost:8080/swagger-ui/index.html#/).
 
 ## Table of Contents
 - [User APIs](#user-apis)
