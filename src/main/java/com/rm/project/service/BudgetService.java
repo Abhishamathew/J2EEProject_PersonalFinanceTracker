@@ -2,6 +2,7 @@ package com.rm.project.service;
 
 import com.rm.project.model.Budget;
 import com.rm.project.model.Notification;
+import com.rm.project.model.User;
 import com.rm.project.repository.BudgetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class BudgetService {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private UserService userService;
+
     public List<Budget> getBudgetsByUserId(Long userId) {
         return budgetRepository.findByUserId(userId);
     }
@@ -28,6 +32,7 @@ public class BudgetService {
     }
 
     public Budget saveBudget(Budget budget) {
+        userService.getUserById(budget.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
         if (budget.getAmount() <= budget.getExpenditure()) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String message = String.format("Budget for period %s to %s has exceeded or is about to exceed",

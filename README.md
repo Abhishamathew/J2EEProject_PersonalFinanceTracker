@@ -43,14 +43,6 @@ APIs for managing users
 - **Responses**:
     - `200 OK` - Registration successful (returns "Registered successfully")
 
-### Create a new user
-- **URL**: `/api/users`
-- **Method**: POST
-- **Description**: Create a new user with the provided user object
-- **Request Body**: User object
-- **Responses**:
-    - `200 OK` - Returns the created user object
-
 ## Budget APIs
 APIs for managing budgets
 

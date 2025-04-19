@@ -30,6 +30,7 @@ public class AlertService {
     }
 
     public Alert saveAlert(Alert alert) {
+
         Budget budget = budgetService.getBudgetById(alert.getBudgetId())
                 .orElseThrow(() -> new IllegalArgumentException("Budget not found"));
         Notification notification = createNotification(alert, budget.getUserId());

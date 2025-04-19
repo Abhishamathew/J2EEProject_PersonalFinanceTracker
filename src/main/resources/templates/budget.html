@@ -5,70 +5,154 @@
     <title>Budget Details</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <style>
-        .section {
-            margin-bottom: 30px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+        /* Reset & Base */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #dff3fc, #ffffff);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container-big {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .navigation a {
+            color: #007BFF;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .navigation a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            background: #fafafa;
+        }
+
+        h1, h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
         .data-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
-        .data-table th, .data-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
+
+        .data-table th,
+        .data-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .data-table th {
+            background-color: #f4f8fc;
+            color: #333;
             text-align: left;
         }
-        .data-table th {
-            background-color: #f2f2f2;
-        }
+
         .data-table tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #f9fcff;
         }
+
         .progress-bar {
             width: 100%;
             background-color: #e0e0e0;
-            border-radius: 3px;
+            border-radius: 8px;
             margin-top: 10px;
         }
+
         .progress {
             height: 20px;
             background-color: #4CAF50;
-            border-radius: 3px;
+            border-radius: 8px;
         }
+
         .button {
-            background-color: #4CAF50;
+            background: linear-gradient(135deg, #1976d2, #0d47a1);
             color: white;
-            padding: 10px 15px;
+            padding: 10px 18px;
             border: none;
-            border-radius: 4px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 16px;
-            margin-right: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
+
         .button:hover {
-            background-color: #45a049;
+            background: linear-gradient(135deg, #45a049, #1b5e20);
         }
+
+
+
+        /* Delete button */
         .delete-button {
-            background-color: #f44336;
+            background: linear-gradient(135deg, #e53935, #b71c1c); /* modern red tone */
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
+
         .delete-button:hover {
-            background-color: #d32f2f;
+            background: linear-gradient(135deg, #c62828, #7f0000);
+            transform: scale(1.03);
         }
+
         #message {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
+            padding: 12px 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            font-weight: 500;
+            display: none;
         }
+
         .success {
             background-color: #d4edda;
             color: #155724;
         }
+
         .error {
             background-color: #f8d7da;
             color: #721c24;
+        }
+
+        .budget-info p {
+            margin: 8px 0;
         }
     </style>
 </head>

@@ -44,19 +44,32 @@ public class BudgetController {
     @PostMapping
     public Budget createBudget(
             @RequestParam double amount,
-            @RequestParam(defaultValue = "0.0") double expenditure,
             @RequestParam String startDate,
             @RequestParam String endDate,
             @RequestParam Long userId) {
+        if (userId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User ID cannot be null");
+        }
+
+
+        if (amount <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Amount must be greater than 0");
+        }
 
         Budget budget = new Budget();
         budget.setAmount(amount);
-        budget.setExpenditure(expenditure);
+        budget.setExpenditure(0);
         budget.setStartDate(Date.valueOf(startDate));
         budget.setEndDate(Date.valueOf(endDate));
         budget.setUserId(userId);
 
-        return budgetService.saveBudget(budget);
+        try{
+            return budgetService.saveBudget(budget);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Argument: " + e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating budget", e);
+        }
     }
 
     @Operation(summary = "Update an existing budget",

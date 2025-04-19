@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -33,7 +34,17 @@ public class NotificationController {
             description = "Create a new notification with the specified details")
     @PostMapping
     public Notification createNotification(@RequestBody Notification notification) {
-        return notificationService.saveNotification(notification);
+        try{
+            if (notification.getUserId() == null) {
+                throw new IllegalArgumentException("User ID cannot be null");
+            }
+            return notificationService.saveNotification(notification);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Argument: " + e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating alert", e);
+        }
+
     }
 
     @Operation(summary = "Delete a notification by ID",

@@ -58,6 +58,13 @@ public class ExpenseService {
                     .orElseThrow(() -> new IllegalArgumentException("Budget not found"));
 
             budget.setExpenditure(budget.getExpenditure() - expense.getAmount());
+            List<Alert> alerts = alertService.getAltersByBudgetId(budget.getBudgetId());
+            for (Alert alert : alerts) {
+                if (expense.getDate().before(alert.getDeadline()) || expense.getDate().equals(alert.getDeadline())) {
+                    alert.setCurrentAmount(alert.getCurrentAmount() - expense.getAmount());
+                }
+            }
+            alertService.saveAlerts(alerts);
             budgetService.saveBudget(budget);
             expenseRepository.deleteById(expenseId);
         }

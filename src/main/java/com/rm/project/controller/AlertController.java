@@ -60,8 +60,13 @@ public class AlertController {
         alert.setCurrentAmount(currentAmount);
         alert.setDeadline(Date.valueOf(deadline));
         alert.setBudgetId(budgetId);
-
-        return alertService.saveAlert(alert);
+        try {
+            return alertService.saveAlert(alert);
+        }catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Argument: " + e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating alert");
+        }
     }
 
     @Operation(summary = "Update an existing alert",
@@ -72,8 +77,7 @@ public class AlertController {
             @RequestParam String description,
             @RequestParam double targetAmount,
             @RequestParam double currentAmount,
-            @RequestParam String deadline,
-            @RequestParam Long budgetId) {
+            @RequestParam String deadline) {
 
         Alert alert = alertService.getAlertById(alertId);
         if (alert == null) {
@@ -84,7 +88,6 @@ public class AlertController {
         alert.setTargetAmount(targetAmount);
         alert.setCurrentAmount(currentAmount);
         alert.setDeadline(Date.valueOf(deadline));
-        alert.setBudgetId(budgetId);
 
         return alertService.saveAlert(alert);
     }

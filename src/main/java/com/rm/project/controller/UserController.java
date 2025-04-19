@@ -24,7 +24,11 @@ public class UserController {
             description = "Retrieve a specific user by their ID")
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id).orElse(null);
+        User user = userService.getUserById(id).orElse(null);
+        if (user != null) {
+            user.setPassword(null);
+        }
+        return user;
     }
 
     @Operation(summary = "User login",
@@ -60,15 +64,15 @@ public class UserController {
     )
     @PostMapping("/register")
     public String userRegister(@RequestParam String userName, @RequestParam String password, @RequestParam String email, @RequestParam String phoneNumber) {
+        if(userName.isBlank() || password.isBlank() || email.isBlank() || phoneNumber.isBlank()) {
+            return "All fields are required";
+        }
+        if(userService.getUserByUsername(userName) != null) {
+            return "Username already exists";
+        }
         User user = new User( userName, password, email, phoneNumber);
         userService.saveUser(user);
         return "Registered successfully";
     }
 
-    @Operation(summary = "Create a new user",
-            description = "Create a new user with the provided user object")
-    @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.saveUser(user);
-    }
 }

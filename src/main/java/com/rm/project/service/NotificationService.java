@@ -12,6 +12,9 @@ public class NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
 
+    @Autowired
+    private UserService userService;
+
     public List<Notification> getNotificationsByUserId(Long userId) {
         return notificationRepository.findByUserId(userId);
     }
@@ -25,6 +28,7 @@ public class NotificationService {
     }
 
     public Notification saveNotification(Notification notification) {
+        userService.getUserById(notification.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
         return notificationRepository.save(notification);
     }
 

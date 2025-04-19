@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Date;
 import java.util.List;
@@ -63,15 +64,16 @@ public class ExpenseController {
             @PathVariable Long expenseId,
             @RequestParam double amount,
             @RequestParam String category,
-            @RequestParam String date,
-            @RequestParam Long budgetId) {
+            @RequestParam String date) {
 
         Expense expense = expenseService.getExpenseById(expenseId);
 
+        if (expense == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Expense not found");
+        }
         expense.setAmount(amount);
         expense.setCategory(category);
         expense.setDate(Date.valueOf(date));
-        expense.setBudgetId(budgetId);
 
         return expenseService.saveExpense(expense);
     }
