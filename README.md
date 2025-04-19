@@ -30,7 +30,7 @@ For the APIs you can use Postman to test the APIs.
 This API provides endpoints for managing budgets, expenses, alerts, notifications, and user accounts in a budget management application.
 
 ## Detailed API Documentation
-The detailed API documentation is available at [Postman Documentation](https://documenter.getpostman.com/view/14091899/2sB2cd5JXA)
+The detailed API documentation is available at (recommended detailed documentation with tested api responses) [Postman Documentation](https://documenter.getpostman.com/view/14091899/2sB2cd5JXA)
 or find the swagger documentation after running the application at [Swagger UI](http://localhost:8080/swagger-ui/index.html#/).
 
 ## Table of Contents
