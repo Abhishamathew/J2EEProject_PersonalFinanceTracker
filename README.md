@@ -19,7 +19,7 @@ For the frontend, you can access the application at http://localhost:8080/ after
 - You can delete the alerts or expenses by clicking on their respective delete buttons.
 - You can go back to the budget list by clicking on the dashboard navigation.
 - Notifications will be crated when the total expenses exceed the alert target amount and the expense is before the alert deadline.
-- You can view the notifications by clicking on the notification navigation in the dashboard in the top corner.
+- You can view the notifications by clicking on the notification navigation in the top right corner.
 - You can delete the notifications by clicking on the delete button of the notification.
 
 For the APIs you can use Postman to test the APIs. 

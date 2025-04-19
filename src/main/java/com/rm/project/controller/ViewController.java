@@ -1,5 +1,6 @@
 package com.rm.project.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -39,5 +40,15 @@ public class ViewController {
     @GetMapping("/notifications")
     public String notifications() {
         return "notifications";
+    }
+
+    @GetMapping("/edit-expense")
+    public String editExpense() {
+        return "edit-expense";
+    }
+
+    @GetMapping("/edit-alert")
+    public String editAlert() {
+        return "edit-alert";
     }
 }

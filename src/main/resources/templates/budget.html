@@ -20,7 +20,7 @@
         }
 
         .container-big {
-            max-width: 1000px;
+            width: 70%;
             margin: 0 auto;
             background: #fff;
             border-radius: 16px;
@@ -105,6 +105,12 @@
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .edit-button {
+            width: 100%;
+            text-align: center;
         }
 
         .button:hover {
@@ -160,6 +166,7 @@
 <div class="container-big">
     <div class="navigation">
         <a href="/dashboard">Dashboard</a>
+        <a href="/notifications">Notifications</a>
         <a href="/?logout=true">Logout</a>
     </div>
 
@@ -300,7 +307,7 @@
                         <td>${progress}%</td>
                         <td>${deadline}</td>
                         <td>
-                            <a href="/edit-alert?id=${alert.alertId}" class="button">Edit</a>
+                            <a href="/edit-alert?alertId=${alert.alertId}&budgetId=${currentBudgetId}" class="button edit-button">Edit</a>
                             <button onclick="deleteAlert(${alert.alertId})" class="button delete-button">Delete</button>
                         </td>
                     </tr>
@@ -360,7 +367,7 @@
                         <td>${expense.category}</td>
                         <td>${date}</td>
                         <td>
-                            <a href="/edit-expense?id=${expense.expenseId}" class="button">Edit</a>
+                            <a href="/edit-expense?expenseId=${expense.expenseId}&budgetId=${currentBudgetId}" class="button edit-button">Edit</a>
                             <button onclick="deleteExpense(${expense.expenseId})" class="button delete-button">Delete</button>
                         </td>
                     </tr>

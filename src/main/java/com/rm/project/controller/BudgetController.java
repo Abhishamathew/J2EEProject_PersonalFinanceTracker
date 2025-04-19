@@ -51,9 +51,15 @@ public class BudgetController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User ID cannot be null");
         }
 
-
         if (amount <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Amount must be greater than 0");
+        }
+
+        if(startDate == null || endDate == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date and end date cannot be null");
+        }
+        if(Date.valueOf(startDate).after(Date.valueOf(endDate))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start date cannot be after end date");
         }
 
         Budget budget = new Budget();

@@ -2,12 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create Alert</title>
+    <title>Edit Alert</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <style>
         .form-container {
             max-width: 500px;
             margin: 0 auto;
+            padding: 20px;
         }
         .message {
             padding: 10px;
@@ -32,10 +33,10 @@
     </div>
 
     <div class="form-container">
-        <h1>Create New Alert</h1>
+        <h1>Edit Alert</h1>
         <div id="message" class="message" style="display: none;"></div>
 
-        <form id="alertForm">
+        <form id="editAlertForm">
             <div class="form-group">
                 <label for="description">Description:</label>
                 <input type="text" id="description" name="description" required>
@@ -48,7 +49,7 @@
 
             <div class="form-group">
                 <label for="currentAmount">Current Amount:</label>
-                <input type="number" id="currentAmount" name="currentAmount" step="0.01" min="0" value="0">
+                <input type="number" id="currentAmount" name="currentAmount" step="0.01" min="0" disabled>
             </div>
 
             <div class="form-group">
@@ -56,36 +57,51 @@
                 <input type="date" id="deadline" name="deadline" required>
             </div>
 
-            <input type="hidden" id="budgetId" name="budgetId">
+            <input type="hidden" id="alertId" name="alertId">
 
             <div class="form-group">
-                <button type="submit">Create Alert</button>
+                <button type="submit">Update Alert</button>
             </div>
         </form>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get budgetId from URL
+        document.addEventListener('DOMContentLoaded', function () {
             const urlParams = new URLSearchParams(window.location.search);
+            const alertId = urlParams.get('alertId');
             const budgetId = urlParams.get('budgetId');
 
-            if (!budgetId) {
-                showMessage('Budget ID is missing. Please go back and try again.', 'error');
+            if (!alertId || !budgetId) {
+                showMessage('Alert ID or Budget ID is missing. Please go back and try again.', 'error');
                 document.querySelector('button[type="submit"]').disabled = true;
                 return;
             }
 
-            // Set budget ID in the hidden field
-            document.getElementById('budgetId').value = budgetId;
+            document.getElementById('alertId').value = alertId;
 
-            // Set minimum date to today
             const today = new Date();
             const formattedDate = today.toISOString().split('T')[0];
             document.getElementById('deadline').min = formattedDate;
 
-            // Handle form submission
-            document.getElementById('alertForm').addEventListener('submit', function(e) {
+            fetch(`/api/alerts/${alertId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch alert');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('description').value = data.description;
+                    document.getElementById('targetAmount').value = data.targetAmount;
+                    document.getElementById('currentAmount').value = data.currentAmount;
+                    document.getElementById('deadline').value = data.deadline;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('Could not load alert details.', 'error');
+                });
+
+            document.getElementById('editAlertForm').addEventListener('submit', function (e) {
                 e.preventDefault();
 
                 const formData = new FormData();
@@ -93,29 +109,26 @@
                 formData.append('targetAmount', document.getElementById('targetAmount').value);
                 formData.append('currentAmount', document.getElementById('currentAmount').value);
                 formData.append('deadline', document.getElementById('deadline').value);
-                formData.append('budgetId', document.getElementById('budgetId').value);
 
-                fetch('/api/alerts', {
-                    method: 'POST',
+                fetch(`/api/alerts/${alertId}`, {
+                    method: 'PUT',
                     body: formData
                 })
                     .then(response => {
                         if (!response.ok) {
-                            throw new Error('Failed to create alert');
+                            throw new Error('Failed to update alert');
                         }
                         return response.json();
                     })
                     .then(data => {
-                        showMessage('Alert created successfully!', 'success');
-
-                        // Redirect back to budget-details after a short delay
+                        showMessage('Alert updated successfully!', 'success');
                         setTimeout(() => {
                             window.location.href = '/budget-details?id=' + budgetId;
                         }, 1500);
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        showMessage('Failed to create alert. Please try again.', 'error');
+                        showMessage('Failed to update alert. Please try again.', 'error');
                     });
             });
 

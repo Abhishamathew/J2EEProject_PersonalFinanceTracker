@@ -62,7 +62,7 @@
                     <td>${budget.startDate}</td>
                     <td>${budget.endDate}</td>
                     <td>
-                        <button onclick="viewBudgetDetails(${budget.budgetId})">View Details</button>
+                        <button style="margin-bottom: 5px" onclick="viewBudgetDetails(${budget.budgetId})">View Details</button>
                         <button onclick="deleteBudget(${budget.budgetId})">Delete</button>
                     </td>
                 `;
@@ -100,7 +100,7 @@
                 })
                 .then(() => {
                     document.getElementById('budgetForm').reset();
-                    showMessage('Budget created successfully', 'success');
+                    showMessage('Budget created successfully', 'success-message');
                     fetchBudgets(userId);
                 })
                 .catch(error => {
@@ -125,7 +125,7 @@
                             throw new Error('Failed to delete budget');
                         }
                         const userId = sessionStorage.getItem('userId');
-                        showMessage('Budget deleted successfully', 'success');
+                        showMessage('Budget deleted successfully', 'success-message');
                         fetchBudgets(userId);
                     })
                     .catch(error => {
